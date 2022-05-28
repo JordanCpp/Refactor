@@ -224,11 +224,8 @@ int main()
 		sourceFiles[i].replace("== _gsnd_anim_sound", "== Class_game_sound::_gsnd_anim_sound");
 		sourceFiles[i].replace("xClass_db::", "Class_xfile::x");
 		sourceFiles[i].replace("dClass_db::", "Class_dfile::d");
-
-		
-
-
-		
+		sourceFiles[i].replace("worldClass_map::", "Class_map::");
+		sourceFiles[i].replace("programFatalError(", "Class_interpreter::programFatalError(");	
 	}
 
 	
