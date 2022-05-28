@@ -114,7 +114,7 @@ void LoadFiles(std::vector<TextFile>& dest, const std::string& path, const std::
 
 bool IsValid(const std::string& source)
 {
-	const std::regex regex("(typedef|static|extern|enum|pack|#define)");
+	const std::regex regex("(typedef|static|extern|enum|pack|#define|#if|#elif)");
 
 	std::smatch smatch;
 
@@ -200,11 +200,38 @@ int main()
 	{
 		for (size_t j = 0; j < names.size(); j++)
 		{
+			std::string word = names[j].substr(0, names[j].size() - 1);
+
 			sourceFiles[i].replace(names[j], "Class_" + fileNames[j] + "::" + names[j]);
+
+			sourceFiles[i].replace("== " + word, "== Class_" + fileNames[j] + "::" + word);
+
+			sourceFiles[i].replace(word + ",", "Class_" + fileNames[j] + "::" + word + ",");
+
+			sourceFiles[i].replace(word + ")", "Class_" + fileNames[j] + "::" + word + ")");
+
+			sourceFiles[i].replace(word + ";", "Class_" + fileNames[j] + "::" + word + ";");
 		}
 
 		std::cout << sourceFiles[i].Path() << '\n';
 	}
+
+
+	//Post fix
+	for (size_t i = 0; i < sourceFiles.size(); i++)
+	{
+		sourceFiles[i].replace("Class_animation::regClass_animation::_anim_animate", "Class_animation::reg_anim_animate");
+		sourceFiles[i].replace("== _gsnd_anim_sound", "== Class_game_sound::_gsnd_anim_sound");
+		sourceFiles[i].replace("xClass_db::", "Class_xfile::x");
+		sourceFiles[i].replace("dClass_db::", "Class_dfile::d");
+
+		
+
+
+		
+	}
+
+	
 
 	for (size_t i = 0; i < sourceFiles.size(); i++)
 	{
