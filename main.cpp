@@ -160,7 +160,8 @@ int main()
 				j = i;
 				
 				std::string name1 = sm[1];
-				std::string name2 = name1.substr(0, name1.size() - 1);
+				//std::string name2 = name1.substr(0, name1.size() - 1);
+				std::string name2 = name1;
 				std::string name3 = headerFiles[k].Name();
 				//std::cout << name2 << '\n';
 				names.push_back(name1);
