@@ -114,7 +114,7 @@ void LoadFiles(std::vector<TextFile>& dest, const std::string& path, const std::
 
 bool IsValid(const std::string& source)
 {
-	const std::regex regex("(typedef|static|extern|enum|pack)");
+	const std::regex regex("(typedef|static|extern|enum|pack|#define)");
 
 	std::smatch smatch;
 
@@ -139,33 +139,39 @@ int main()
 
 	std::smatch sm;
 
+	std::vector<std::string> fileNames;
 	std::vector<std::string> names;
 
 	for (size_t k = 0; k < headerFiles.size(); k++)
 	{
 		size_t j = 0;
-		bool tr = false;
+		size_t tr = 0;
+		bool first = false;
 
 		for (size_t i = 0; i < headerFiles[k].Length(); i++)
 		{
 			if (std::regex_search(headerFiles[k].String(i), sm, r) && IsValid(headerFiles[k].String(i)))
 			{
-				tr = true;
+				if (first == false && tr == 0)
+				{
+					first = true;
+				}
 
 				j = i;
 				
 				std::string name1 = sm[1];
 				std::string name2 = name1.substr(0, name1.size() - 1);
-
+				std::string name3 = headerFiles[k].Name();
 				//std::cout << name2 << '\n';
 				names.push_back(name1);
+				fileNames.push_back(name3);
 
 				std::string s = "static " + headerFiles[k].String(i);
 
 
-				if (tr)
+				if (tr == 0 && first == true)
 				{
-					tr = false;
+					tr = 2;
 
 					std::string n = "class Class_" + headerFiles[k].Name() + " { public: " + s;
 					s = n;
@@ -193,7 +199,7 @@ int main()
 	{
 		for (size_t j = 0; j < names.size(); j++)
 		{
-			sourceFiles[i].replace(names[j], "Class_" + sourceFiles[i].Name() + "::" + names[j]);
+			sourceFiles[i].replace(names[j], "Class_" + fileNames[j] + "::" + names[j]);
 		}
 
 		std::cout << sourceFiles[i].Path() << '\n';
